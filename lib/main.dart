@@ -1,10 +1,11 @@
-import 'package:expenseapp/expenses.dart';
+import 'package:expenseapp/widgets/expenses.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: true,
+    theme: ThemeData(useMaterial3: true),
     title: 'Expense App',
-    home: Expenses(),
+    home: const Expenses(),
   ));
 }
