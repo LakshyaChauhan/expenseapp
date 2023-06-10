@@ -26,14 +26,54 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
-        context: context, builder: (ctx) => const NewExpense());
+        isScrollControlled: true,
+        isDismissible: true,
+        showDragHandle: true,
+        context: context,
+        builder: (ctx) => NewExpense(
+              onAddExpense: onAddExpense,
+            ));
+  }
+
+  void onAddExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
+  }
+
+  void onRemoveExpense(Expense expense) {
+    final index = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('Expense Deleted..'),
+      duration: const Duration(seconds: 2),
+      action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => setState(() {
+                _registeredExpenses.insert(index, expense);
+              })),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget container =
+        const Center(child: Text('No Expense added, try adding some!'));
+
+    if (_registeredExpenses.isNotEmpty) {
+      container = ExpensesList(
+          expenses: _registeredExpenses, onRemoved: onRemoveExpense);
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Expense Tracker')),
+        title: const Text(
+          'Expense Tracker',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         actions: [
           IconButton(
               onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
@@ -41,15 +81,10 @@ class _ExpensesState extends State<Expenses> {
       ),
       body: SizedBox(
         width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('The Chart'),
-            Expanded(
-              child: ExpensesList(expenses: _registeredExpenses),
-            ),
-          ],
-        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Text('The Chart'),
+          Expanded(child: container),
+        ]),
       ),
     );
   }
