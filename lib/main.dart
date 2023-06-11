@@ -9,6 +9,7 @@ var kColorScheme =
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: true,
+    themeMode: ThemeMode.light,
     theme: ThemeData().copyWith(
         useMaterial3: true,
         colorScheme: kColorScheme,

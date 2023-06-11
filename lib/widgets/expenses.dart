@@ -1,3 +1,4 @@
+import 'package:expenseapp/widgets/chart/chart.dart';
 import 'package:expenseapp/widgets/expenses-list/expenses_list.dart';
 import 'package:expenseapp/models/expense.dart';
 import 'package:expenseapp/widgets/new_expense.dart';
@@ -67,6 +68,10 @@ class _ExpensesState extends State<Expenses> {
       container = ExpensesList(
           expenses: _registeredExpenses, onRemoved: onRemoveExpense);
     }
+    double sum = 0;
+    for (final total in _registeredExpenses) {
+      sum += total.amount;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -82,7 +87,14 @@ class _ExpensesState extends State<Expenses> {
       body: SizedBox(
         width: double.infinity,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text('The Chart'),
+          Text(
+            'Total expense  = $sum',
+            style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 80, 9, 119)),
+          ),
+          Chart(expenses: _registeredExpenses),
           Expanded(child: container),
         ]),
       ),
