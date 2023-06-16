@@ -61,6 +61,8 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     Widget container =
         const Center(child: Text('No Expense added, try adding some!'));
 
@@ -74,30 +76,58 @@ class _ExpensesState extends State<Expenses> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Expense Tracker',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        actions: [
-          IconButton(
-              onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
-        ],
-      ),
-      body: SizedBox(
-        width: double.infinity,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(
-            'Total expense  = $sum',
-            style: const TextStyle(
-                fontSize: 18,
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 30,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
+          title: const Text(
+            'Expense Tracker',
+            style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 80, 9, 119)),
+                fontSize: 16,
+                color: Color.fromARGB(255, 198, 185, 255)),
           ),
-          Chart(expenses: _registeredExpenses),
-          Expanded(child: container),
-        ]),
-      ),
-    );
+          actions: [
+            width > 600
+                ? Text(
+                    'Total expense  = $sum',
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                  )
+                : const SizedBox(),
+            IconButton(
+                onPressed: _openAddExpenseOverlay,
+                icon: const Icon(Icons.add),
+                style: const ButtonStyle(
+                    iconColor: MaterialStatePropertyAll(
+                        Color.fromARGB(255, 198, 185, 255)))),
+          ],
+        ),
+        body: SizedBox(
+            width: double.infinity,
+            child: width < 600
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        Text(
+                          'Total expense  = $sum',
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 80, 9, 119)),
+                        ),
+                        Chart(expenses: _registeredExpenses),
+                        Expanded(child: container),
+                      ])
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: Chart(expenses: _registeredExpenses)),
+                      Expanded(child: container),
+                    ],
+                  )));
   }
 }
